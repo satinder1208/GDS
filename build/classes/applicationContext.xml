@@ -9,7 +9,7 @@
 	 http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd  
 	 http://www.zkoss.org/2008/zkspring/core http://www.zkoss.org/2008/zkspring/core/zkspring-core.xsd   
 	 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd  
-	 http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd  
+	 http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd  
 	 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
 	 http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
 	 
@@ -52,18 +52,27 @@
 	
 		<context:property-placeholder location="classpath:config.properties" />
 
-	<mongo:mongo host="${db.host}" port="${db.port}" />
+	<!-- <mongo:mongo host="${db.host}" port="${db.port}" />
 	
 	<mongo:db-factory host="${db.host}"
                   port="${db.port}"
                   dbname="${db.name}"
                   username="${db.username}"
-                  password="${db.password}"/>
+                  password="${db.password}"/> -->
                   
 	<!-- <mongo:db-factory dbname="${app.db.name}" /> -->
 
-	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+	<!-- <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+	</bean> -->
+	
+	<mongo:mongo-client host="${db.host}" port="${db.port}" credentials="${db.username}:${db.password}@${db.name}">
+	    <mongo:client-options write-concern="NORMAL" />
+	</mongo:mongo-client>
+	
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+	    <constructor-arg name="mongo" ref="mongo"/>
+	    <constructor-arg name="databaseName" value="${db.name}"/>
 	</bean>
 
 	<bean id="appContextProvider" class="com.mk.utils.ContextHolder" />
